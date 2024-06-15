@@ -15,7 +15,14 @@
     <body>
         <div class="container">
         <h1>Weather App</h1>
+        <h3 id="locationFound"></h3>
+        
+        <div class="search-container">
         <input type="text" id="locationInput" placeholder="Enter a city" required>
+        <div class="recentSearch" id="recentSearch">
+            <h4>Recent Searches</h4>
+        </div>
+        </div>
         
         <div class="switch">
             <label>
@@ -31,10 +38,11 @@
         <div class="weather-info">
             <h2 id="location"></h2>
             <p id="temperature"></p>
-            <p id="description"></p>
+            <p id="description"></p> 
+            <img id="weathericon" src='images/empty.png'>
         </div>
         
         </div>
-        <script src="script.js" async defer></script>
+        <script type="module" src="script.js" async defer></script>
     </body>
 </html>
