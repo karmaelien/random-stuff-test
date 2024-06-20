@@ -1,0 +1,92 @@
+body{
+  background-color:gainsboro;
+  margin-top: 50px;
+  margin-left: 50px;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 85%;
+  max-width: 600px;
+  box-sizing: border-box;
+  border: 2px solid rgb(38, 163, 34);
+  margin: auto;
+}
+
+.board-row {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.square{
+  background-color:beige;
+  border: 2px solid black;
+  width: 33.33%;
+  aspect-ratio: 1/1;
+  font-size: 80px;
+  font-weight: 100;
+  cursor: pointer;
+  margin: 0;
+}
+
+.square:hover{
+  background-color: aliceblue;
+}
+
+.status{
+  font-size: x-large;
+  font-weight: bold;
+  text-align: center;
+}
+
+.game-mode{
+  width: 40%;
+  margin-inline: 2%;
+  margin-bottom: 50px;
+  padding: 10px;
+  color: brown;
+  background-color: antiquewhite;
+  border-radius: 10px;
+  font-size: xx-large;
+  cursor: pointer;
+}
+
+.game-mode b{
+  color:crimson;
+}
+
+.game-mode:hover{
+  background-color: aqua;
+}
+
+.game-button{
+  width: 20%;
+  margin-inline: 13.5%;
+  margin-bottom: 10px;
+  padding: 10px;
+  color:crimson;
+  background-color:cornsilk;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.game-button:hover{
+  background-color: aqua;
+}
+
+.ultimate-board-row{
+  display: flex;
+  width: 100%;
+}
+
+.ultimate-board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 85%; /* Adjust this based on the layout */
+  max-width: 600px;
+  border: 1px solid black; /* Border around the entire ultimate board */
+  box-sizing: border-box; 
+  margin: auto;
+}
