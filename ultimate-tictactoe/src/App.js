@@ -77,7 +77,7 @@ function Ultimategame(){
   const [xIsNext, setXIsNext] = useState(true);
   const [activeBoard, setActiveBoard] = useState(null);
   const [activeHistory, setActiveHistory] = useState([]);
-  const [history, setHistory] = useState([Array(9).fill([Array(9).fill(null)])]);
+  const [history, setHistory] = useState([Array(9).fill().map(() => Array(9).fill(null))]);
   const currentSquares = history[history.length - 1];
 
   function resetBoard(){
@@ -94,16 +94,15 @@ function Ultimategame(){
     }
     setHistory(history.slice(0,-1));
     setXIsNext(!xIsNext);
-    const lastActiveBoard = history.pop();
-    setHistory(history);
+    const lastActiveBoard = activeHistory.pop();
+    setActiveHistory(activeHistory);
     setActiveBoard(lastActiveBoard);
   }
 
   function handlePlay(nextSquares, nextBoard) {
     setHistory([...history, nextSquares]);
     setXIsNext(!xIsNext);
-    const lastBoard = activeBoard
-    setActiveHistory([...activeHistory, lastBoard]);
+    setActiveHistory([...activeHistory, activeBoard]);
     setActiveBoard(nextBoard);
   }
 
@@ -130,11 +129,12 @@ function Ultimategame(){
       <div className='game-info'>
         <br></br>
         Ultimate TicTacToe! A spinoff of the original! Nested TicTacToe, if you place in the 
-        top right of a smaller 3x3, you're opponent's next move must be in the corresponding square 
+        top right of a smaller 3x3, your opponent's next move must be in the corresponding square 
         of the big 3x3! Hope that makes sense! You'll learn as you go! 
-
+        <br></br><br></br>
         The goal is similar, to get 3 in a row on the big board. But in order to place on the big
-        board you must win the underlying small board!!
+        board you must win the underlying small board!! You can place in the highlighted square, if none is
+        shown you can go anywhere!
       </div>
     </div>
   )
@@ -189,20 +189,16 @@ function Square({value, onSquareClick}){
 }
 
 function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activeBoard }){
-
+  const isActive = ultimate && (boardIndex == activeBoard);
   function handleClick(i){
     
     if (ultimate){ 
-      if(squares[i] || calculateWinner(squares) || (activeBoard !== boardIndex && activeBoard !== null)){
+      if(squares[i] || calculateWinner(squares) || ((activeBoard !== boardIndex) && (activeBoard != null))){        
         return;
       }
       const nextSquares = squares.slice();
       const newBoards = ultBoard.slice();
-      if (xIsNext){
-        nextSquares[i] = "X";}
-      else{
-        nextSquares[i] = "O";
-      }
+      nextSquares[i] = (xIsNext ? "X" : "O");
       newBoards[boardIndex] = nextSquares
       onPlay(newBoards, i)
 
@@ -212,17 +208,13 @@ function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activ
         return;
       }
       const nextSquares = squares.slice();
-      if (xIsNext){
-        nextSquares[i] = "X";}
-      else{
-        nextSquares[i] = "O";
-      }
+      nextSquares[i] = (xIsNext ? "X" : "O");
       onPlay(nextSquares)
   }
   }
   return( 
     <>
-    <div className='board'>
+    <div className={`board ${isActive ? 'active-board': ''}`}>
     <div className='board-row'>
       <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
       <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
