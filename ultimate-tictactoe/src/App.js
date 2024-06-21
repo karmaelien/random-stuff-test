@@ -60,10 +60,11 @@ function NormalGame(){
       <button className='game-button' onClick={() => resetBoard()}>Reset Board</button>
       <button className='game-button' onClick={() => undoMove()}>Undo</button>
       <div className='status'>{status}</div>
-      <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} ultimate={false} />
       </div>
       <div className='game-info'>
-
+        <br></br>
+        Classic TicTacToe, you know the rules!
       </div>
     </div>
   )
@@ -101,8 +102,9 @@ function Ultimategame(){
   function handlePlay(nextSquares, nextBoard) {
     setHistory([...history, nextSquares]);
     setXIsNext(!xIsNext);
-    setActiveHistory(...activeHistory, activeBoard)
-    setActiveBoard(nextBoard)
+    const lastBoard = activeBoard
+    setActiveHistory([...activeHistory, lastBoard]);
+    setActiveBoard(nextBoard);
   }
 
   const winner = calculateWinner(currentSquares);
@@ -123,17 +125,23 @@ function Ultimategame(){
       <button className='game-button' onClick={() => resetBoard()}>Reset Board</button>
       <button className='game-button' onClick={() => undoMove()}>Undo</button>
       <div className='status'>{status}</div>
-      <UltimateBoard xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      <UltimateBoard activeBoard={activeBoard} xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className='game-info'>
+        <br></br>
+        Ultimate TicTacToe! A spinoff of the original! Nested TicTacToe, if you place in the 
+        top right of a smaller 3x3, you're opponent's next move must be in the corresponding square 
+        of the big 3x3! Hope that makes sense! You'll learn as you go! 
 
+        The goal is similar, to get 3 in a row on the big board. But in order to place on the big
+        board you must win the underlying small board!!
       </div>
     </div>
   )
 }
 
 
-function UltimateBoard({ xIsNext, squares, onPlay }){
+function UltimateBoard({ xIsNext, squares, onPlay, activeBoard }){
   
   function handlePlay(i){
     
@@ -153,20 +161,20 @@ function UltimateBoard({ xIsNext, squares, onPlay }){
     <>
     <div className='ultimate-board'>
     <div className='ultimate-board-row'>
-      <Board xIsNext={xIsNext} squares={squares[0]} onPlay={onPlay} />
-      <Board xIsNext={xIsNext} squares={squares[1]} onPlay={onPlay} />
-      <Board xIsNext={xIsNext} squares={squares[2]} onPlay={onPlay} />  
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={0} squares={squares[0]} onPlay={onPlay} ultimate={true}/>
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={1} squares={squares[1]} onPlay={onPlay} ultimate={true}/>
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={2} squares={squares[2]} onPlay={onPlay} ultimate={true}/>  
     </div>
     <div className='ultimate-board-row'>
-      <Board xIsNext={xIsNext} squares={squares[3]} onPlay={onPlay} />
-      <Board xIsNext={xIsNext} squares={squares[4]} onPlay={onPlay} />
-      <Board xIsNext={xIsNext} squares={squares[5]} onPlay={onPlay} />
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={3} squares={squares[3]} onPlay={onPlay} ultimate={true}/>
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={4} squares={squares[4]} onPlay={onPlay} ultimate={true}/>
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={5} squares={squares[5]} onPlay={onPlay} ultimate={true}/>
      
     </div>
     <div className='ultimate-board-row'>
-      <Board xIsNext={xIsNext} squares={squares[6]} onPlay={onPlay} />
-      <Board xIsNext={xIsNext} squares={squares[7]} onPlay={onPlay} />
-      <Board xIsNext={xIsNext} squares={squares[8]} onPlay={onPlay} />
+      <Board activeBoard={activeBoard} ultBoard={squares}  xIsNext={xIsNext} boardIndex={6} squares={squares[6]} onPlay={onPlay} ultimate={true}/>
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={7} squares={squares[7]} onPlay={onPlay} ultimate={true}/>
+      <Board activeBoard={activeBoard} ultBoard={squares} xIsNext={xIsNext} boardIndex={8} squares={squares[8]} onPlay={onPlay} ultimate={true}/>
      
     </div></div>
     </>
@@ -180,22 +188,38 @@ function Square({value, onSquareClick}){
 )
 }
 
-function Board({ xIsNext, squares, onPlay }){
+function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activeBoard }){
 
   function handleClick(i){
     
-    if(squares[i] || calculateWinner(squares)){
-      return;
-    }
-    const nextSquares = squares.slice();
-    if (xIsNext){
-      nextSquares[i] = "X";}
-    else{
-      nextSquares[i] = "O";
-    }
-    onPlay(nextSquares)
-  }
+    if (ultimate){ 
+      if(squares[i] || calculateWinner(squares) || (activeBoard !== boardIndex && activeBoard !== null)){
+        return;
+      }
+      const nextSquares = squares.slice();
+      const newBoards = ultBoard.slice();
+      if (xIsNext){
+        nextSquares[i] = "X";}
+      else{
+        nextSquares[i] = "O";
+      }
+      newBoards[boardIndex] = nextSquares
+      onPlay(newBoards, i)
 
+    }
+    else{
+      if(squares[i] || calculateWinner(squares)){
+        return;
+      }
+      const nextSquares = squares.slice();
+      if (xIsNext){
+        nextSquares[i] = "X";}
+      else{
+        nextSquares[i] = "O";
+      }
+      onPlay(nextSquares)
+  }
+  }
   return( 
     <>
     <div className='board'>
