@@ -12,6 +12,32 @@ body{
   box-sizing: border-box;
   border: 1px solid rgb(30, 112, 27);
   margin: auto;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 150px;
+  z-index: 1;
+}
+
+.X{
+  color: red;
+}
+.O{
+  color: blue;
+}
+
+.claimed{
+  border: 2px solid green;
 }
 
 .active-board{

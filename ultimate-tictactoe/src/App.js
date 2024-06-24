@@ -47,7 +47,7 @@ function NormalGame(){
     if (winner) {
       status = "Winner: " + winner;
     }
-    else if(checkFull(currentSquares)){
+    else if(checkFull(currentSquares, false)){
       status = "Tie. Play again!"
     }
     else{
@@ -81,7 +81,7 @@ function Ultimategame(){
   const currentSquares = history[history.length - 1];
 
   function resetBoard(){
-    setHistory([Array(9).fill([Array(9).fill(null)])]);
+    setHistory([Array(9).fill().map(() => Array(9).fill(null))]);
     setXIsNext(true);
     setActiveBoard(null);
     setActiveHistory([]);
@@ -104,14 +104,17 @@ function Ultimategame(){
     setXIsNext(!xIsNext);
     setActiveHistory([...activeHistory, activeBoard]);
     setActiveBoard(nextBoard);
+    if (calculateWinner(nextSquares[nextBoard])){
+      setActiveBoard(null)
+  }
   }
 
-  const winner = calculateWinner(currentSquares);
+  const winner = calculateUltimateWinner(currentSquares);
     let status;
     if (winner) {
       status = "Winner: " + winner;
     }
-    else if(checkFull(currentSquares)){
+    else if(checkFull(currentSquares, true)){
       status = "Tie. Play again!"
     }
     else{
@@ -142,21 +145,7 @@ function Ultimategame(){
 
 
 function UltimateBoard({ xIsNext, squares, onPlay, activeBoard }){
-  
-  function handlePlay(i){
-    
-    if(squares[i] || calculateWinner(squares)){
-      return;
-    }
-    const nextSquares = squares.slice();
-    if (xIsNext){
-      nextSquares[i] = "X";}
-    else{
-      nextSquares[i] = "O";
-    }
-    onPlay(nextSquares)
-  }
-
+ 
   return( 
     <>
     <div className='ultimate-board'>
@@ -190,10 +179,11 @@ function Square({value, onSquareClick}){
 
 function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activeBoard }){
   const isActive = ultimate && (boardIndex == activeBoard);
+  const BoardClaim = calculateWinner(squares)
   function handleClick(i){
     
     if (ultimate){ 
-      if(squares[i] || calculateWinner(squares) || ((activeBoard !== boardIndex) && (activeBoard != null))){        
+      if(squares[i] || BoardClaim || calculateUltimateWinner(ultBoard) || ((activeBoard !== boardIndex) && (activeBoard != null))){        
         return;
       }
       const nextSquares = squares.slice();
@@ -214,7 +204,8 @@ function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activ
   }
   return( 
     <>
-    <div className={`board ${isActive ? 'active-board': ''}`}>
+    <div className={`board ${BoardClaim ? 'claimed': ''} ${isActive ? 'active-board': ''}`}>
+      {BoardClaim && <div className={`overlay ${BoardClaim}`}>{BoardClaim}</div>}
     <div className='board-row'>
       <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
       <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
@@ -236,6 +227,7 @@ function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activ
 }
 
 function calculateWinner(squares){
+  if(!squares) return null;
   const lines = [
     [0,1,2],
     [3,4,5],
@@ -255,7 +247,12 @@ function calculateWinner(squares){
   return null;
 }
 
-function checkFull(squares){
+function checkFull(squares, isUltimate){
+  if(isUltimate){
+    const big_squares = squares.map(board => calculateWinner(board))
+    return checkFull(big_squares, false)
+  }
+  else{
   let full = true
   for (let i = 0; i < squares.length; i++) {
     if(squares[i] == null){
@@ -264,5 +261,9 @@ function checkFull(squares){
   }
   return full
   }
+}
 
-
+function calculateUltimateWinner(squares){
+  const big_squares = squares.map(board => calculateWinner(board))
+  return calculateWinner(big_squares)
+}
