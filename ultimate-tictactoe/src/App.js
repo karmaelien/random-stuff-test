@@ -178,7 +178,7 @@ function Square({value, onSquareClick}){
 }
 
 function Board({ xIsNext, squares, onPlay, ultimate, boardIndex, ultBoard, activeBoard }){
-  const isActive = ultimate && (boardIndex == activeBoard);
+  const isActive = ultimate && (boardIndex === activeBoard);
   const BoardClaim = calculateWinner(squares)
   function handleClick(i){
     

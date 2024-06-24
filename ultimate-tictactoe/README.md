@@ -1,3 +1,6 @@
+This is an ULTIMATE TicTacToe game made with React!
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
