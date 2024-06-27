@@ -1,7 +1,6 @@
 import { Queue } from './queue.mjs';
+import {apiKey} from './config.js';
 
-
-const apiKey ='4840b059127797b29d0d835ce79cc29d';
 const apiUrl ='https://api.openweathermap.org/data/2.5/weather';
 
 const locationInput = document.getElementById('locationInput');
